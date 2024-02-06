@@ -12,5 +12,18 @@ public class AddBookCopiesCommand extends InventoryDecorator{
         // TODO
         inventory.add_copies(id, quantity);
     }
+
+    @Override
+    public String toString() {
+        return "AddBookCopiesCommand{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                '}';
+    }
+
+    @Override
+    public String get_description() {
+        return inventory.get_description() + "AddBookCopiesCommand";
+    }
     
 }

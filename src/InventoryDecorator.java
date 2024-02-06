@@ -1,4 +1,4 @@
-public abstract class InventoryDecorator extends AbstractInventory {
+public abstract class InventoryDecorator extends Inventory {
     Inventory inventory;
     InventoryDecorator command;
 
@@ -6,5 +6,9 @@ public abstract class InventoryDecorator extends AbstractInventory {
     public void execute() {
         // TODO
     }
+
+    public abstract String toString();
+
+    public abstract String get_description();
 
 }

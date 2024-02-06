@@ -12,4 +12,17 @@ public class AddBookCommand extends InventoryDecorator{
         // TODO
         inventory.add_book(name, price);
     }
+
+    @Override
+    public String toString() {
+        return "AddBookCommand{" +
+                "name='" + name + '\'' +
+                ", price=" + price +
+                '}';
+    }
+
+    @Override
+    public String get_description() {
+        return inventory.get_description() + "AddBookCommand";
+    }
 }

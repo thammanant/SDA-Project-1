@@ -5,22 +5,26 @@ import java.util.Objects;
 public class Inventory extends AbstractInventory implements Originator{
     private List<Book> books = new ArrayList<>();
 
-    private List<InventoryDecorator> commands;
+    private List<Command> commands = new ArrayList<>();
 
     private final Caretaker caretaker;
 
     public Inventory() {
         caretaker = new Caretaker();
+        
     }
 
     public Memento save() {
-        return new ConcreteMemento(this);
+        return new ConcreteMemento(this, caretaker);
     }
 
     public void recover(Memento memento) {
         memento.restore();
     }
 
+    public String get_description(){
+        return commands.toString();
+    }
 
     public Book get_book_by_id(Integer id) {
         for (Book b : books) {
@@ -105,12 +109,30 @@ public class Inventory extends AbstractInventory implements Originator{
         this.books = books;
     }
 
-    public void add_command(Command command) {
-        // TODO
+    // public void add_command(Command commands) {
+    //     // TODO
+    //     for (Command command : commands){
+    //         this.commands.add(command);
+    //     }
+    //     // commands.add(command);
+    // }
+
+    public void addCommands(Command... commands) {
+        for (Command command : commands) {
+            this.commands.add(command);
+        }
+    }
+
+    public void print_commands(){
+        System.out.println(get_description());
     }
 
     @Override
     public void execute() {
         // TODO
+        for (Command command : commands) {
+            command.execute();
+        }
+        commands.clear();
     }
 }

@@ -10,4 +10,14 @@ public class SellBookCommand extends InventoryDecorator{
         // TODO
         inventory.sell_book(id);
     }
+    @Override
+    public String toString() {
+        return "SellBookCommand{" +
+                "id=" + id +
+                '}';
+    }
+    @Override
+    public String get_description() {
+        return inventory.get_description() + "SellBookCommand";
+    }
 }
