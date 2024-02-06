@@ -1,16 +1,23 @@
-class ConcreteMemento implements Memento {
+public class ConcreteMemento implements Memento {
     private Inventory inventory;
+    private final Caretaker caretaker;
 
-    public ConcreteMemento(Inventory inventory) {
+    public ConcreteMemento(Inventory inventory, Caretaker caretaker) {
         this.inventory = inventory;
+        this.caretaker = caretaker;
     }
 
-//    public String restore() {
-//        return inventory;
-//    }
-
+    @Override
     public void restore() {
-        System.out.println("Restoring inventory: " + inventory);
+        Memento lastMemento = caretaker.get_History();
+        if (lastMemento instanceof ConcreteMemento lastConcreteMemento) {
+            Inventory lastInventory = lastConcreteMemento.getInventory();
+            // Restore inventory state
+            this.inventory = lastInventory;
+        }
     }
 
+    public Inventory getInventory() {
+        return inventory;
+    }
 }

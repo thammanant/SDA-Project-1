@@ -1,10 +1,20 @@
-public class Inventory extends AbstractInventory{
+public class Inventory extends AbstractInventory implements Originator{
     private Book[] books;
 
     private Command[] commands;
 
-    public void save() {
-        // TODO
+    private Caretaker caretaker;
+
+    public Inventory() {
+        caretaker = new Caretaker();
+    }
+
+    public Memento save() {
+        return new ConcreteMemento(this);
+    }
+
+    public void recover(Memento memento) {
+        ((ConcreteMemento) memento).restore();
     }
 
     public Book get_book_by_id(Integer id) {
@@ -39,10 +49,6 @@ public class Inventory extends AbstractInventory{
 
     // Execute all commands
     public void execute() {
-        // TODO
-    }
-
-    public void recover() {
         // TODO
     }
 }
