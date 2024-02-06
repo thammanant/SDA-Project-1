@@ -1,7 +1,7 @@
 public class Inventory extends AbstractInventory{
     private Book[] books;
 
-    private Command[] commands;
+    private InventoryDecorator[] commands;
 
     public void save() {
         // TODO
@@ -38,6 +38,7 @@ public class Inventory extends AbstractInventory{
     }
 
     // Execute all commands
+    @Override
     public void execute() {
         // TODO
     }
