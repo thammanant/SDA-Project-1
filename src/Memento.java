@@ -1,5 +1,3 @@
-import java.io.Serializable;
-
-interface Memento extends Serializable {
+public interface Memento {
     void restore();
 }
