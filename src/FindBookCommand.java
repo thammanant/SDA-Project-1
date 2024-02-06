@@ -22,4 +22,17 @@ public class FindBookCommand extends InventoryDecorator{
             System.out.println("Invalid input");
         }
     }
+
+    @Override
+    public String toString() {
+        return "FindBookCommand{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                '}';
+    }
+
+    @Override
+    public String get_description() {
+        return inventory.get_description() + "FindBookCommand";
+    }
 }

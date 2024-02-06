@@ -12,4 +12,17 @@ public class ChangeBookPriceCommand extends InventoryDecorator{
         // TODO
         inventory.change_price(id, price);
     }
+
+    @Override
+    public String toString() {
+        return "ChangeBookPriceCommand{" +
+                "id=" + id +
+                ", price=" + price +
+                '}';
+    }
+
+    @Override
+    public String get_description() {
+        return inventory.get_description() + "ChangeBookPriceCommand";
+    }
 }
