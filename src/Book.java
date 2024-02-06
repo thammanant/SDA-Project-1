@@ -7,6 +7,7 @@ public class Book {
     public Book(String name, Integer price) {
         this.name = name;
         this.price = price;
+        this.quantity = 1;
         // TODO implement ID generation
     }
 

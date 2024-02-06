@@ -1,9 +1,11 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Inventory extends AbstractInventory implements Originator{
-    private Book[] books;
+    private List<Book> books = new ArrayList<>();
 
-    private InventoryDecorator[] commands;
+    private List<InventoryDecorator> commands;
 
     private final Caretaker caretaker;
 
@@ -12,12 +14,13 @@ public class Inventory extends AbstractInventory implements Originator{
     }
 
     public Memento save() {
-        return new ConcreteMemento(this, caretaker);
+        return new ConcreteMemento(this);
     }
 
     public void recover(Memento memento) {
-        ((ConcreteMemento) memento).restore();
+        memento.restore();
     }
+
 
     public Book get_book_by_id(Integer id) {
         for (Book b : books) {
@@ -38,29 +41,25 @@ public class Inventory extends AbstractInventory implements Originator{
     }
 
     public void add_book(String name, Integer price) {
-        Book book = new Book(name, price);
 
-        // check if book already exists
+        // Check if book already exists
         for (Book b : books) {
             if (b.get_Name().equals(name)) {
                 b.set_Quantity(b.get_Quantity() + 1);
-            } else {
-                Book[] newBooks = new Book[books.length + 1];
-                System.arraycopy(books, 0, newBooks, 0, books.length);
-                books = newBooks;
-                books[books.length - 1] = book;
-                book.set_ID(books.length);
+                return; // Return after updating the quantity
             }
         }
+
+        // Book doesn't exist, add it to the array
+        Book new_book = new Book(name, price);
+        books.add(new_book);
     }
+
 
     public void sell_book(Integer id) {
         for (Book b : books) {
             if (Objects.equals(b.get_ID(), id)) {
                 b.set_Quantity(b.get_Quantity() - 1);
-            }
-            else {
-                System.out.println("Out of stock!");
             }
         }
     }
@@ -85,6 +84,25 @@ public class Inventory extends AbstractInventory implements Originator{
                 System.out.println("Book not found!");
             }
         }
+    }
+
+    // get all books
+    public List<Book> get_books() {
+        return books;
+    }
+
+
+    //get all books, its ID and quantity
+    public String get_books_with_quantity() {
+        StringBuilder sb = new StringBuilder();
+        for (Book b : books) {
+            sb.append("ID ").append(b.get_ID()).append(" : ").append(b.get_Name()).append(" --> ").append(b.get_Quantity()).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public void set_books(List<Book> books) {
+        this.books = books;
     }
 
     public void add_command(Command command) {
