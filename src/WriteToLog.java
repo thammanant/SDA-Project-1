@@ -17,8 +17,12 @@ public class WriteToLog {
 
     // Read
     public String read() {
-        // TODO
-        return "Not implemented";
+        try {
+            return new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(logFile)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // Clear

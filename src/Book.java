@@ -34,6 +34,10 @@ public class Book {
         this.price = price;
     }
 
+    public void set_ID(Integer ID) {
+        this.ID = ID;
+    }
+
     public void set_Quantity(Integer quantity) {
         this.quantity = quantity;
     }
