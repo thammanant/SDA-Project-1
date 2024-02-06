@@ -17,19 +17,21 @@ public class Inventory extends AbstractInventory{
         return null;
     }
 
-    public void add_book(Book book) {
+    public void add_book(String name, Integer price) {
         // TODO
     }
 
-    public void sell_book(Book book) {
+    public void sell_book(Integer id) {
         // TODO
     }
 
-    public void add_copies(Book book, Integer quantity) {
+    
+
+    public void add_copies(Integer id, Integer quantity) {
         // TODO
     }
 
-    public void change_price(Book book, Integer price) {
+    public void change_price(Integer id, Integer price) {
         // TODO
     }
 
