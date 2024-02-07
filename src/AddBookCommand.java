@@ -1,16 +1,26 @@
 public class AddBookCommand extends InventoryDecorator{
-    public String name;
-    public Integer price;
+    private String name;
+    private Integer price;
+    private Inventory inventory;
 
     public AddBookCommand(String name, Integer price) {
         this.name = name;
         this.price = price;
     }
 
+    public AddBookCommand(Inventory inventory, String name, Integer price) {
+        this.inventory = inventory;
+        this.name = name;
+        this.price = price;
+    }
+
     @Override
     public void execute() {
-        // TODO
-        inventory.add_book(name, price);
+        if (inventory != null) {
+            inventory.add_book(name, price);
+        } else {
+            System.out.println("Inventory is not initialized properly.");
+        }
     }
 
     @Override
