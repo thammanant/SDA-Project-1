@@ -1,14 +1,16 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Caretaker {
+class Caretaker {
     private final List<Memento> history = new ArrayList<>();
 
-    public void add(Memento memento) {
-        history.add(memento);
+    // Method to add a memento to history
+    public void add(Memento inventory) {
+        history.add(inventory);
     }
 
+    // Method to get the latest memento
     public Memento get_History() {
-        return history.getLast();
+        return history.isEmpty() ? null : history.getLast();
     }
 }

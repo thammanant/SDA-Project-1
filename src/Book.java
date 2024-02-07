@@ -11,6 +11,13 @@ public class Book {
         // TODO implement ID generation
     }
 
+    public Book(Integer ID, String name, Integer price, Integer quantity) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+        this.ID = ID;
+    }
+
     public String get_Name() {
         return name;
     }
