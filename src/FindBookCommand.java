@@ -28,10 +28,7 @@ public class FindBookCommand extends InventoryDecorator{
 
     @Override
     public String toString() {
-        return "FindBookCommand{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
-                '}';
+        return "FindBookCommand{" + name + "," + id + '}';
     }
 
     @Override

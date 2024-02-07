@@ -70,48 +70,83 @@ public class Inventory extends AbstractInventory implements Originator, Serializ
         // Read lines from file
         String[] lines = log.read();
 
-        // Parse and add commands from log
-        for (String line : lines) {
-            // Assuming the format is consistent, parse the command type and parameters
-            String[] parts = line.split("[({,=})]");
-            String commandType = parts[0];
-            switch (commandType) {
-                case "AddBookCommand":
-                    String bookName = parts[3];
-                    int price = Integer.parseInt(parts[5]);
-                    add_commands(new AddBookCommand(this, bookName, price));
-                    break;
-                case "AddBookCopiesCommand":
-                    int id = Integer.parseInt(parts[1]);
-                    int quantity = Integer.parseInt(parts[3]);
-                    add_commands(new AddBookCopiesCommand(this, id, quantity));
-                    break;
-                case "SellBookCommand":
-                    int sellId = Integer.parseInt(parts[1]);
-                    add_commands(new SellBookCommand(this, sellId));
-                    break;
-                case "FindBookCommand":
-                    if (parts.length == 4 && parts[2].equals("id")) {
-                        int findId = Integer.parseInt(parts[3]);
-                        add_commands(new FindBookCommand(this, findId));
-                    } else if (parts.length == 4 && parts[2].equals("name")) {
-                        String findName = parts[3];
-                        add_commands(new FindBookCommand(this, findName));
+        // Check if there are lines in the log
+        if (lines.length > 0) {
+            // Get the last line
+            String lastLine = lines[lines.length - 1];
+
+            // Find the index of the last opening bracket '[' and closing bracket ']'
+            int startIndex = lastLine.lastIndexOf("[");
+            int endIndex = lastLine.lastIndexOf("]");
+
+            // Check if both brackets are found and startIndex is before endIndex
+            if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
+                // Extract the substring between the last '[' and ']'
+                String commandsContent = lastLine.substring(startIndex + 1, endIndex);
+                // Split the commands content by }, to get individual commands
+                String[] commands = commandsContent.split("},");
+                for (String command : commands) {
+                    command += "}";
+                    // Parse individual command
+                    String[] parts = command.split("[{},]");
+                    String commandType = parts[0];
+                    // Remove whitespace from command type
+                    commandType = commandType.trim();
+                    switch (commandType) {
+                        // Handle each command type accordingly
+                        case "AddBookCommand":
+                            String bookName = parts[1];
+                            int price = Integer.parseInt(parts[2]);
+                            add_commands(new AddBookCommand(this, bookName, price));
+                            System.out.println("Added book: " + bookName + " with price: " + price);
+                            break;
+                        case "AddBookCopiesCommand":
+                            int id = Integer.parseInt(parts[1]);
+                            int quantity = Integer.parseInt(parts[2]);
+                            add_commands(new AddBookCopiesCommand(this, id, quantity));
+                            System.out.println("Added " + quantity + " copies of book with ID: " + id);
+                            break;
+                        case "SellBookCommand":
+                            int sellId = Integer.parseInt(parts[1]);
+                            add_commands(new SellBookCommand(this, sellId));
+                            System.out.println("Sold book with ID: " + sellId);
+                            break;
+                        case "FindBookCommand":
+                            String paramName = parts[1];
+                            String paramValue = parts[2];
+                            if (paramValue.equals("null")) {
+                                add_commands(new FindBookCommand(this, paramName));
+                                System.out.println("Found book by name: " + paramName);
+                            } else {
+                                int findId = Integer.parseInt(paramValue);
+                                add_commands(new FindBookCommand(this, findId));
+                                System.out.println("Found book by ID: " + findId);
+                            }
+                            break;
+                        case "ChangeBookPriceCommand":
+                            int changeId = Integer.parseInt(parts[1]);
+                            int newPrice = Integer.parseInt(parts[2]);
+                            add_commands(new ChangeBookPriceCommand(this, changeId, newPrice));
+                            System.out.println("Changed price of book with ID: " + changeId + " to: " + newPrice);
+                            break;
+
+                        default:
+                            System.out.println("Unsupported command type: " + commandType);
                     }
-                    break;
-                case "ChangeBookPriceCommand":
-                    int changeId = Integer.parseInt(parts[1]);
-                    int newPrice = Integer.parseInt(parts[3]);
-                    add_commands(new ChangeBookPriceCommand(this, changeId, newPrice));
-                    break;
-                // Add cases for other command types if needed
-                default:
-                    System.out.println("Unsupported command type: " + commandType);
+                }
+            } else {
+                System.out.println("Invalid log line format: " + lastLine);
             }
+        } else {
+            System.out.println("Log file is empty.");
         }
+
 
         // Execute commands
         this.execute();
+        // Clear the log after successful execution
+        log.clear();
+
     }
 
 
@@ -122,7 +157,7 @@ public class Inventory extends AbstractInventory implements Originator, Serializ
     public Book get_book_by_id(Integer id) {
         for (Book b : books) {
             if (Objects.equals(b.get_ID(), id)) {
-                System.out.println("Name: " + b.get_Name() + "\nID: "+ b.get_ID() + "\nQuantity: " + b.get_Quantity() + "\nPrice: " + b.get_Price());
+                System.out.println("Name: " + b.get_Name() + "\nID: "+ b.get_ID() + "\nQuantity: " + b.get_Quantity() + "\nPrice: " + b.get_Price() + "\n");
                 return b;
             }
         }
@@ -132,7 +167,7 @@ public class Inventory extends AbstractInventory implements Originator, Serializ
     public Book get_book_by_name(String name) {
         for (Book b : books) {
             if (b.get_Name().equals(name)) {
-                System.out.println("Name: " + b.get_Name() + "\nID: " + b.get_ID() + "\nQuantity: " + b.get_Quantity() + "\nPrice: " + b.get_Price());
+                System.out.println("Name: " + b.get_Name() + "\nID: " + b.get_ID() + "\nQuantity: " + b.get_Quantity() + "\nPrice: " + b.get_Price() + "\n");
                 return b;
             }
         }

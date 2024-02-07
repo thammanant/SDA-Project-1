@@ -21,10 +21,7 @@ public class ChangeBookPriceCommand extends InventoryDecorator{
 
     @Override
     public String toString() {
-        return "ChangeBookPriceCommand{" +
-                "id=" + id +
-                ", price=" + price +
-                '}';
+        return "ChangeBookPriceCommand{" + id + "," + price + '}';
     }
 
     @Override

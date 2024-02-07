@@ -16,9 +16,7 @@ public class SellBookCommand extends InventoryDecorator{
     }
     @Override
     public String toString() {
-        return "SellBookCommand{" +
-                "id=" + id +
-                '}';
+        return "SellBookCommand{"+ id + '}';
     }
     @Override
     public String get_description() {

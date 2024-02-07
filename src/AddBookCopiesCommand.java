@@ -21,10 +21,7 @@ public class AddBookCopiesCommand extends InventoryDecorator{
 
     @Override
     public String toString() {
-        return "AddBookCopiesCommand{" +
-                "id=" + id +
-                ", quantity=" + quantity +
-                '}';
+        return "AddBookCopiesCommand{" + id + "," + quantity + '}';
     }
 
     @Override

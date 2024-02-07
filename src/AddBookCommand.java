@@ -20,10 +20,7 @@ public class AddBookCommand extends InventoryDecorator{
 
     @Override
     public String toString() {
-        return "AddBookCommand{" +
-                "name='" + name + '\'' +
-                ", price=" + price +
-                '}';
+        return "AddBookCommand{" + name + "," + price + '}';
     }
 
     @Override
