@@ -56,7 +56,7 @@ public class Inventory extends AbstractInventory implements Originator{
         for (Book b : books) {
             if (b.get_Name().equals(name)) {
                 b.set_Quantity(b.get_Quantity() + 1);
-                return; // Return after updating the quantity
+                return;
             }
         }
 
@@ -111,15 +111,7 @@ public class Inventory extends AbstractInventory implements Originator{
         this.books = new ArrayList<>(books); // Deep copy the books list
     }
 
-    // public void add_command(Command commands) {
-    //     // TODO
-    //     for (Command command : commands){
-    //         this.commands.add(command);
-    //     }
-    //     // commands.add(command);
-    // }
-
-    public void addCommands(Command... commands) {
+    public void add_commands(Command... commands) {
         for (Command command : commands) {
             this.commands.add(command);
         }
@@ -131,7 +123,6 @@ public class Inventory extends AbstractInventory implements Originator{
 
     @Override
     public void execute() {
-        // TODO
         for (Command command : commands) {
             command.execute();
         }

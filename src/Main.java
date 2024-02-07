@@ -6,7 +6,7 @@ public class Main {
         AddBookCopiesCommand addBookCopiesCommand1 = new AddBookCopiesCommand(1, 10);
         SellBookCommand sellBookCommand1 = new SellBookCommand(1);
 
-        inventory.addCommands(addBookCommand1, addBookCommand2, addBookCopiesCommand1, sellBookCommand1);
+        inventory.add_commands(addBookCommand1, addBookCommand2, addBookCopiesCommand1, sellBookCommand1);
         inventory.print_commands();
     }
 }

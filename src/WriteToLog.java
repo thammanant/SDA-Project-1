@@ -1,5 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WriteToLog {
     private final String logFile = "log.txt";
@@ -16,13 +20,18 @@ public class WriteToLog {
     }
 
     // Read
-    public String read() {
-        try {
-            return new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(logFile)));
+    public String[] read() {
+        // read and put it in array separate by new line
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(logFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return lines.toArray(new String[0]);
     }
 
     // Clear

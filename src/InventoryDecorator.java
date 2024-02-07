@@ -1,11 +1,8 @@
 public abstract class InventoryDecorator extends Inventory {
     Inventory inventory;
-    InventoryDecorator command;
 
     @Override
-    public void execute() {
-        // TODO
-    }
+    public void execute() {}
 
     public abstract String toString();
 
