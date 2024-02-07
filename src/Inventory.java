@@ -33,56 +33,85 @@ public class Inventory extends AbstractInventory implements Originator, Serializ
 
     // Method to recover the state to the latest saved state
     public void recover() {
-        Memento latestSnapshot = caretaker.get_History();
-        if (latestSnapshot != null) {
-            latestSnapshot.restore(this);
-
-            // Read lines from file
-            String[] lines = log.read();
-
-            // Parse and add commands from log
-            for (String line : lines) {
-                // Assuming the format is consistent, parse the command type and parameters
-                String[] parts = line.split("[({,=})]");
-                String commandType = parts[0];
-                switch (commandType) {
-                    case "AddBookCommand":
-                        String bookName = parts[3];
-                        int price = Integer.parseInt(parts[5]);
-                        add_commands(new AddBookCommand(this, bookName, price));
-                        break;
-                    case "AddBookCopiesCommand":
-                        int id = Integer.parseInt(parts[1]);
-                        int quantity = Integer.parseInt(parts[3]);
-                        add_commands(new AddBookCopiesCommand(this, id, quantity));
-                        break;
-                    case "SellBookCommand":
-                        int sellId = Integer.parseInt(parts[1]);
-                        add_commands(new SellBookCommand(this, sellId));
-                        break;
-                    case "FindBookCommand":
-                        if (parts.length == 4 && parts[2].equals("id")) {
-                            int findId = Integer.parseInt(parts[3]);
-                            add_commands(new FindBookCommand(this, findId));
-                        } else if (parts.length == 4 && parts[2].equals("name")) {
-                            String findName = parts[3];
-                            add_commands(new FindBookCommand(this, findName));
-                        }
-                        break;
-                    case "ChangeBookPriceCommand":
-                        int changeId = Integer.parseInt(parts[1]);
-                        int newPrice = Integer.parseInt(parts[3]);
-                        add_commands(new ChangeBookPriceCommand(this, changeId, newPrice));
-                        break;
-                    // Add cases for other command types if needed
-                    default:
-                        System.out.println("Unsupported command type: " + commandType);
+        String recoverFile = "recover.txt";
+        try {
+            File file = new File(recoverFile);
+            if (!file.exists()) {
+                // If the file doesn't exist, create a new one
+                System.out.println("Inventory file not found. Creating a new file.");
+                if (file.createNewFile()) {
+                    System.out.println("New inventory file created successfully.");
+                } else {
+                    System.err.println("Failed to create new inventory file.");
+                    return;
                 }
             }
 
-            // Execute commands
-            this.execute();
+            if (file.length() == 0) {
+                // If the file is empty, don't read it
+                System.err.println("Inventory file is empty. Skipping loading process.");
+                return;
+            }
+
+            try (FileInputStream fileInputStream = new FileInputStream(file);
+                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+
+                // Deserialize the memento object from the file
+                ConcreteMemento memento = (ConcreteMemento) objectInputStream.readObject();
+                memento.restore(this);
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Inventory file not found. Skipping loading process.");
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error occurred during loading. Skipping loading process.");
         }
+
+
+        // Read lines from file
+        String[] lines = log.read();
+
+        // Parse and add commands from log
+        for (String line : lines) {
+            // Assuming the format is consistent, parse the command type and parameters
+            String[] parts = line.split("[({,=})]");
+            String commandType = parts[0];
+            switch (commandType) {
+                case "AddBookCommand":
+                    String bookName = parts[3];
+                    int price = Integer.parseInt(parts[5]);
+                    add_commands(new AddBookCommand(this, bookName, price));
+                    break;
+                case "AddBookCopiesCommand":
+                    int id = Integer.parseInt(parts[1]);
+                    int quantity = Integer.parseInt(parts[3]);
+                    add_commands(new AddBookCopiesCommand(this, id, quantity));
+                    break;
+                case "SellBookCommand":
+                    int sellId = Integer.parseInt(parts[1]);
+                    add_commands(new SellBookCommand(this, sellId));
+                    break;
+                case "FindBookCommand":
+                    if (parts.length == 4 && parts[2].equals("id")) {
+                        int findId = Integer.parseInt(parts[3]);
+                        add_commands(new FindBookCommand(this, findId));
+                    } else if (parts.length == 4 && parts[2].equals("name")) {
+                        String findName = parts[3];
+                        add_commands(new FindBookCommand(this, findName));
+                    }
+                    break;
+                case "ChangeBookPriceCommand":
+                    int changeId = Integer.parseInt(parts[1]);
+                    int newPrice = Integer.parseInt(parts[3]);
+                    add_commands(new ChangeBookPriceCommand(this, changeId, newPrice));
+                    break;
+                // Add cases for other command types if needed
+                default:
+                    System.out.println("Unsupported command type: " + commandType);
+            }
+        }
+
+        // Execute commands
+        this.execute();
     }
 
 
@@ -93,6 +122,7 @@ public class Inventory extends AbstractInventory implements Originator, Serializ
     public Book get_book_by_id(Integer id) {
         for (Book b : books) {
             if (Objects.equals(b.get_ID(), id)) {
+                System.out.println("Name: " + b.get_Name() + "\nID: "+ b.get_ID() + "\nQuantity: " + b.get_Quantity() + "\nPrice: " + b.get_Price());
                 return b;
             }
         }
@@ -102,6 +132,7 @@ public class Inventory extends AbstractInventory implements Originator, Serializ
     public Book get_book_by_name(String name) {
         for (Book b : books) {
             if (b.get_Name().equals(name)) {
+                System.out.println("Name: " + b.get_Name() + "\nID: " + b.get_ID() + "\nQuantity: " + b.get_Quantity() + "\nPrice: " + b.get_Price());
                 return b;
             }
         }
@@ -195,20 +226,5 @@ public class Inventory extends AbstractInventory implements Originator, Serializ
             command.execute();
         }
         commands.clear();
-    }
-
-    public void recover_file() {
-        String recoverFile = "recover.txt";
-        try (FileInputStream fileInputStream = new FileInputStream(recoverFile);
-             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
-            // Deserialize the memento object from the file
-            ConcreteMemento memento = (ConcreteMemento) objectInputStream.readObject();
-            memento.restore(this);
-            log.clear();
-        } catch (FileNotFoundException e) {
-            System.err.println("Inventory file not found. Skipping loading process.");
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error occurred during loading. Skipping loading process.");
-        }
     }
 }
