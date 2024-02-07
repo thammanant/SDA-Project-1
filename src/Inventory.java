@@ -5,7 +5,7 @@ import java.util.Objects;
 public class Inventory extends AbstractInventory implements Originator{
     private List<Book> books = new ArrayList<>();
 
-    private List<Command> commands = new ArrayList<>();
+    private List<InventoryDecorator> commands = new ArrayList<>();
 
     private final Caretaker caretaker;
 
@@ -120,8 +120,8 @@ public class Inventory extends AbstractInventory implements Originator{
         this.commands = new ArrayList<>(commands); // set the commands list
     }
 
-    public void add_commands(Command... commands) {
-        for (Command command : commands) {
+    public void add_commands(InventoryDecorator... commands) {
+        for (InventoryDecorator command : commands) {
             this.commands.add(command);
         }
     }
@@ -132,7 +132,7 @@ public class Inventory extends AbstractInventory implements Originator{
 
     @Override
     public void execute() {
-        for (Command command : commands) {
+        for (InventoryDecorator command : commands) {
             command.execute();
         }
         commands.clear();

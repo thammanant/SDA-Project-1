@@ -1,14 +1,23 @@
 public class SellBookCommand extends InventoryDecorator{
-    public Integer id;
+    private Integer id;
+    private Inventory inventory;
+    
+    public SellBookCommand(Integer id) {
+        this.id = id;
+    }
     
 
-    public SellBookCommand(Integer id) {
+    public SellBookCommand(Inventory inventory,Integer id) {
+        this.inventory = inventory;
         this.id = id;
     }
     @Override
     public void execute() {
-        // TODO
-        inventory.sell_book(id);
+        if(inventory != null){
+            inventory.sell_book(id);
+        } else {
+            System.out.println("Inventory is not initialized properly.");
+        }
     }
     @Override
     public String toString() {

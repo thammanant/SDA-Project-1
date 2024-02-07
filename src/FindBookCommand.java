@@ -1,18 +1,21 @@
 public class FindBookCommand extends InventoryDecorator{
-    public String name;
-    public Integer id;
+    private String name;
+    private Integer id;
+    private Inventory inventory;
 
-    public FindBookCommand(String name){
+
+    public FindBookCommand(Inventory inventory, String name){
+        this.inventory = inventory;
         this.name = name;
     }
 
-    public FindBookCommand(Integer id){
+    public FindBookCommand(Inventory inventory, Integer id){
+        this.inventory = inventory;
         this.id = id;
     }
 
     @Override
     public void execute() {
-        // TODO
         if (name != null) {
             inventory.get_book_by_name(name);
         } else if (id != null) {
