@@ -99,6 +99,11 @@ public class Inventory extends AbstractInventory implements Originator{
         return books;
     }
 
+    // get all commands
+    public List<Command> get_commands() {
+        return commands;
+    }
+
     public String get_books_with_quantity_and_price() {
         StringBuilder result = new StringBuilder();
         for (Book b : books) {
@@ -108,7 +113,11 @@ public class Inventory extends AbstractInventory implements Originator{
     }
 
     public void set_books(List<Book> books) {
-        this.books = new ArrayList<>(books); // Deep copy the books list
+        this.books = new ArrayList<>(books); // set the books list
+    }
+
+    public void set_commands(List<Command> commands) {
+        this.commands = new ArrayList<>(commands); // set the commands list
     }
 
     public void add_commands(Command... commands) {
