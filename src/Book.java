@@ -1,4 +1,6 @@
-public class Book {
+import java.io.Serializable;
+
+public class Book implements Serializable {
     private String name;
     private Integer price;
     private Integer ID;
@@ -7,7 +9,15 @@ public class Book {
     public Book(String name, Integer price) {
         this.name = name;
         this.price = price;
+        this.quantity = 1;
         // TODO implement ID generation
+    }
+
+    public Book(Integer ID, String name, Integer price, Integer quantity) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+        this.ID = ID;
     }
 
     public String get_Name() {
@@ -32,6 +42,10 @@ public class Book {
 
     public void set_Price(Integer price) {
         this.price = price;
+    }
+
+    public void set_ID(Integer ID) {
+        this.ID = ID;
     }
 
     public void set_Quantity(Integer quantity) {
