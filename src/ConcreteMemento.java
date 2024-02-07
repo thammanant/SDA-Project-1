@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConcreteMemento implements Memento {
+public class ConcreteMemento implements Memento, Serializable {
     private final List<Book> booksSnapshot;
 
     private final List<Command> CommandsSnapshot;

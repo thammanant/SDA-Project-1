@@ -1,12 +1,14 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.io.Serializable;
 
-public class Inventory extends AbstractInventory implements Originator{
+public class Inventory extends AbstractInventory implements Originator, Serializable{
     private List<Book> books = new ArrayList<>();
-    private List<InventoryDecorator> commands = new ArrayList<>();
+    private List<Command> commands = new ArrayList<>();
 
-    private WriteToLog log = new WriteToLog();
+    private transient WriteToLog log = new WriteToLog();
     private final Caretaker caretaker;
 
     public Inventory() {
@@ -18,7 +20,15 @@ public class Inventory extends AbstractInventory implements Originator{
     public void save() {
         Memento memento = new ConcreteMemento(this);
         caretaker.add(memento);
-        log.clear();
+        ConcreteMemento re = new ConcreteMemento(this);
+        String recoverFile = "recover.txt";
+        try (FileOutputStream fileOutputStream = new FileOutputStream(recoverFile);
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+            objectOutputStream.writeObject(re);
+            log.clear();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Method to recover the state to the latest saved state
@@ -74,7 +84,6 @@ public class Inventory extends AbstractInventory implements Originator{
             this.execute();
         }
     }
-
 
 
     public String get_description(){
@@ -149,7 +158,7 @@ public class Inventory extends AbstractInventory implements Originator{
     }
 
     // get all commands
-    public List<InventoryDecorator> get_commands() {
+    public List<Command> get_commands() {
         return commands;
     }
 
@@ -165,15 +174,14 @@ public class Inventory extends AbstractInventory implements Originator{
         this.books = new ArrayList<>(books); // set the books list
     }
 
-    public void set_commands(List<InventoryDecorator> commands) {
+    public void set_commands(List<Command> commands) {
         this.commands = new ArrayList<>(commands); // set the commands list
     }
 
-    public void add_commands(InventoryDecorator... commands) {
-        for (InventoryDecorator command : commands) {
+    public void add_commands(Command... commands) {
+        for (Command command : commands) {
             this.commands.add(command);
-            log.write(command.get_description());
-
+            log.write(get_description());
         }
     }
 
@@ -183,9 +191,24 @@ public class Inventory extends AbstractInventory implements Originator{
 
     @Override
     public void execute() {
-        for (InventoryDecorator command : commands) {
+        for (Command command : commands) {
             command.execute();
         }
         commands.clear();
+    }
+
+    public void recover_file() {
+        String recoverFile = "recover.txt";
+        try (FileInputStream fileInputStream = new FileInputStream(recoverFile);
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+            // Deserialize the memento object from the file
+            ConcreteMemento memento = (ConcreteMemento) objectInputStream.readObject();
+            memento.restore(this);
+            log.clear();
+        } catch (FileNotFoundException e) {
+            System.err.println("Inventory file not found. Skipping loading process.");
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error occurred during loading. Skipping loading process.");
+        }
     }
 }
