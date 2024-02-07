@@ -13,12 +13,18 @@ public class Inventory extends AbstractInventory implements Originator{
         caretaker = new Caretaker();
     }
 
-    public Memento save() {
-        return new ConcreteMemento(this);
+    // Method to save the current state
+    public void save() {
+        Memento memento = new ConcreteMemento(this);
+        caretaker.add(memento);
     }
 
-    public void recover(Memento memento) {
-        memento.restore();
+    // Method to recover the state to the latest saved state
+    public void recover() {
+        Memento latestSnapshot = caretaker.get_History();
+        if (latestSnapshot != null) {
+            latestSnapshot.restore(this);
+        }
     }
 
 
@@ -52,6 +58,7 @@ public class Inventory extends AbstractInventory implements Originator{
 
         // Book doesn't exist, add it to the array
         Book new_book = new Book(name, price);
+        new_book.set_ID(books.size() + 1);
         books.add(new_book);
     }
 
@@ -60,6 +67,7 @@ public class Inventory extends AbstractInventory implements Originator{
         for (Book b : books) {
             if (Objects.equals(b.get_ID(), id)) {
                 b.set_Quantity(b.get_Quantity() - 1);
+                return;
             }
         }
     }
@@ -68,9 +76,7 @@ public class Inventory extends AbstractInventory implements Originator{
         for (Book b : books) {
             if (Objects.equals(b.get_ID(), id)) {
                 b.set_Quantity(b.get_Quantity() + quantity);
-            }
-            else {
-                System.out.println("Book not found!");
+                return;
             }
         }
     }
@@ -79,9 +85,7 @@ public class Inventory extends AbstractInventory implements Originator{
         for (Book b : books) {
             if (Objects.equals(b.get_ID(), id)) {
                 b.set_Price(price);
-            }
-            else {
-                System.out.println("Book not found!");
+                return;
             }
         }
     }
@@ -91,18 +95,16 @@ public class Inventory extends AbstractInventory implements Originator{
         return books;
     }
 
-
-    //get all books, its ID and quantity
-    public String get_books_with_quantity() {
-        StringBuilder sb = new StringBuilder();
+    public String get_books_with_quantity_and_price() {
+        StringBuilder result = new StringBuilder();
         for (Book b : books) {
-            sb.append("ID ").append(b.get_ID()).append(" : ").append(b.get_Name()).append(" --> ").append(b.get_Quantity()).append("\n");
+            result.append("ID ").append(b.get_ID()).append(" ,Name-> ").append(b.get_Name()).append(" ,Quantity-> ").append(b.get_Quantity()).append(" ,Price-> ").append(b.get_Price()).append("\n");
         }
-        return sb.toString();
+        return result.toString();
     }
 
     public void set_books(List<Book> books) {
-        this.books = books;
+        this.books = new ArrayList<>(books); // Deep copy the books list
     }
 
     public void add_command(Command command) {

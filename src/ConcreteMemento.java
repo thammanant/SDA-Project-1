@@ -1,23 +1,19 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class ConcreteMemento implements Memento {
-    private Inventory inventory;
-    private final Caretaker caretaker;
+    private final List<Book> booksSnapshot;
 
-    public ConcreteMemento(Inventory inventory, Caretaker caretaker) {
-        this.inventory = inventory;
-        this.caretaker = caretaker;
-    }
-
-    @Override
-    public void restore() {
-        Memento lastMemento = caretaker.get_History();
-        if (lastMemento instanceof ConcreteMemento lastConcreteMemento) {
-            Inventory lastInventory = lastConcreteMemento.getInventory();
-            // Restore inventory state
-            this.inventory = lastInventory;
+    public ConcreteMemento(Inventory inventory) {
+        // Create a deep copy of the list of books in the inventory
+        this.booksSnapshot = new ArrayList<>();
+        for (Book book : inventory.get_books()) {
+            this.booksSnapshot.add(new Book(book.get_ID(), book.get_Name(), book.get_Price(), book.get_Quantity()));
         }
     }
 
-    public Inventory getInventory() {
-        return inventory;
+    @Override
+    public void restore(Inventory inventory) {
+        inventory.set_books(new ArrayList<>(booksSnapshot));
     }
 }
