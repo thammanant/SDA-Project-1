@@ -4,9 +4,9 @@ import java.util.Objects;
 
 public class Inventory extends AbstractInventory implements Originator{
     private List<Book> books = new ArrayList<>();
-
     private List<InventoryDecorator> commands = new ArrayList<>();
 
+    private WriteToLog log = new WriteToLog();
     private final Caretaker caretaker;
 
     public Inventory() {
@@ -18,6 +18,7 @@ public class Inventory extends AbstractInventory implements Originator{
     public void save() {
         Memento memento = new ConcreteMemento(this);
         caretaker.add(memento);
+        log.clear();
     }
 
     // Method to recover the state to the latest saved state
@@ -25,8 +26,56 @@ public class Inventory extends AbstractInventory implements Originator{
         Memento latestSnapshot = caretaker.get_History();
         if (latestSnapshot != null) {
             latestSnapshot.restore(this);
+
+            // Read lines from file
+            String[] lines = log.read();
+
+            // Parse and add commands from log
+            for (String line : lines) {
+                // Assuming the format is consistent, parse the command type and parameters
+                String[] parts = line.split("[({,=})]");
+                String commandType = parts[0];
+                switch (commandType) {
+                    case "AddBookCommand":
+                        String bookName = parts[3];
+                        int price = Integer.parseInt(parts[5]);
+                        add_commands(new AddBookCommand(this, bookName, price));
+                        break;
+                    case "AddBookCopiesCommand":
+                        int id = Integer.parseInt(parts[1]);
+                        int quantity = Integer.parseInt(parts[3]);
+                        add_commands(new AddBookCopiesCommand(this, id, quantity));
+                        break;
+                    case "SellBookCommand":
+                        int sellId = Integer.parseInt(parts[1]);
+                        add_commands(new SellBookCommand(this, sellId));
+                        break;
+                    case "FindBookCommand":
+                        if (parts.length == 4 && parts[2].equals("id")) {
+                            int findId = Integer.parseInt(parts[3]);
+                            add_commands(new FindBookCommand(this, findId));
+                        } else if (parts.length == 4 && parts[2].equals("name")) {
+                            String findName = parts[3];
+                            add_commands(new FindBookCommand(this, findName));
+                        }
+                        break;
+                    case "ChangeBookPriceCommand":
+                        int changeId = Integer.parseInt(parts[1]);
+                        int newPrice = Integer.parseInt(parts[3]);
+                        add_commands(new ChangeBookPriceCommand(this, changeId, newPrice));
+                        break;
+                    // Add cases for other command types if needed
+                    default:
+                        System.out.println("Unsupported command type: " + commandType);
+                }
+            }
+
+            // Execute commands
+            this.execute();
         }
     }
+
+
 
     public String get_description(){
         return commands.toString();
@@ -100,7 +149,7 @@ public class Inventory extends AbstractInventory implements Originator{
     }
 
     // get all commands
-    public List<Command> get_commands() {
+    public List<InventoryDecorator> get_commands() {
         return commands;
     }
 
@@ -116,13 +165,15 @@ public class Inventory extends AbstractInventory implements Originator{
         this.books = new ArrayList<>(books); // set the books list
     }
 
-    public void set_commands(List<Command> commands) {
+    public void set_commands(List<InventoryDecorator> commands) {
         this.commands = new ArrayList<>(commands); // set the commands list
     }
 
     public void add_commands(InventoryDecorator... commands) {
         for (InventoryDecorator command : commands) {
             this.commands.add(command);
+            log.write(command.get_description());
+
         }
     }
 

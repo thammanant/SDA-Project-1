@@ -21,7 +21,6 @@ public class WriteToLog {
 
     // Read
     public String[] read() {
-        // read and put it in array separate by new line
         List<String> lines = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(logFile))) {
             String line;
@@ -33,6 +32,7 @@ public class WriteToLog {
         }
         return lines.toArray(new String[0]);
     }
+
 
     // Clear
     public void clear() {

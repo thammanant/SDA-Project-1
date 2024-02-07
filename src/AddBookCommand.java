@@ -3,11 +3,6 @@ public class AddBookCommand extends InventoryDecorator{
     private Integer price;
     private Inventory inventory;
 
-    public AddBookCommand(String name, Integer price) {
-        this.name = name;
-        this.price = price;
-    }
-
     public AddBookCommand(Inventory inventory, String name, Integer price) {
         this.inventory = inventory;
         this.name = name;

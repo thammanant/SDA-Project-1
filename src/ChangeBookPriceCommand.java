@@ -3,11 +3,6 @@ public class ChangeBookPriceCommand extends InventoryDecorator{
     private Integer price;
     private Inventory inventory;
 
-    public ChangeBookPriceCommand(Integer id, Integer price) {
-        this.id = id;
-        this.price = price;
-    }
-
     public ChangeBookPriceCommand(Inventory inventory, Integer id, Integer price) {
         this.inventory = inventory;
         this.id = id;

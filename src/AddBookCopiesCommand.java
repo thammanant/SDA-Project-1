@@ -4,11 +4,6 @@ public class AddBookCopiesCommand extends InventoryDecorator{
     private Inventory inventory;
 
 
-    public AddBookCopiesCommand(Integer id, Integer quantity) {
-        this.id = id;
-        this.quantity = quantity;
-    }
-
     public AddBookCopiesCommand(Inventory inventory, Integer id, Integer quantity) {
         this.inventory = inventory;
         this.id = id;

@@ -1,11 +1,6 @@
 public class SellBookCommand extends InventoryDecorator{
     private Integer id;
     private Inventory inventory;
-    
-    public SellBookCommand(Integer id) {
-        this.id = id;
-    }
-    
 
     public SellBookCommand(Inventory inventory,Integer id) {
         this.inventory = inventory;
